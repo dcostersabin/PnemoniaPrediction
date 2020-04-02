@@ -1,2 +1,2 @@
-# PnemoniaPrediction
-Predicts The Case Of Pnemonia From The Given Images
+# Pneumonia Prediction
+Predicts The Case Of Pneumonia From The Given Images
