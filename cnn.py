@@ -10,15 +10,34 @@ from keras.layers import Flatten
 from keras.models import load_model
 from datetime import datetime
 
+# -------------------------------- NEURAL NETWORK INITIALIZATION VARIABLES -----------------------------------------------------------
+# base dir of the project
 BASE = os.getcwd()
+
+# Directory path of the model to be saved
 MODEL_DIR = BASE + '/Models/myModel'
+
+# Path of the image to be predicted
 PREDICTION_IMAGE = BASE + '/Dataset/val/PNEUMONIA/person1949_bacteria_4880.jpeg'
+
+# Training and Testing data path
 TRAINING_DATA = BASE + '/Dataset/train/'
 TESTING_DATA = BASE + '/Dataset/test/'
 VALIDATION_DATASET = BASE + '/val/'
+
+# Neural Network Parameters
 EPOCH = 5
+CON2D_FILTERS = 64
+ACTIVATION_FUNCTION = 'relu'
+OUTPUT_LAYER_ACTIVATION_FUNCTION = 'sigmoid'
+OPTIMIZER = 'rmsprop'
+LOSS_FUNCTION = 'binary_crossentropy'
+METRICS = ['accuracy']
 
 
+# ---------------------------------------------------------------------------------------------------------------------------------------
+
+# ===================================== Gets No Of Steps Per EPOCH =================================================================
 def get_steps_per_epoches():
     TRAINING_DATA_NO = 0
     TESTING_DATA_NO = 0
@@ -33,6 +52,9 @@ def get_steps_per_epoches():
     return [TRAINING_DATA_NO, TESTING_DATA_NO]
 
 
+#  =================================================================================================================================
+
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!------- Neural Network------!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 def runModel():
     # making directory for the model
     if os.path.exists(BASE + '/Models') and os.path.exists(MODEL_DIR):
@@ -42,31 +64,31 @@ def runModel():
     # initializing the neural network
     classifier = Sequential()
     # adding a convolution layer to the neural network
-    classifier.add(Convolution2D(65, (3, 3), input_shape=(150, 150, 3), activation='relu'))
+    classifier.add(Convolution2D(CON2D_FILTERS, (3, 3), input_shape=(150, 150, 3), activation=ACTIVATION_FUNCTION))
     # adding pooling layer using maxpooling
     classifier.add(MaxPooling2D(pool_size=(2, 2)))
     # adding another convolution layer
-    classifier.add(Convolution2D(65, (3, 3), input_shape=(150, 150, 3), activation='relu'))
+    classifier.add(Convolution2D(CON2D_FILTERS, (3, 3), input_shape=(150, 150, 3), activation=ACTIVATION_FUNCTION))
     # adding another max pooling layer for conv2D
     classifier.add(MaxPooling2D(pool_size=(2, 2)))
     # adding another layer of convolution layer
-    classifier.add(Convolution2D(65, (3, 3), input_shape=(150, 150, 3), activation='relu'))
+    classifier.add(Convolution2D(CON2D_FILTERS, (3, 3), input_shape=(150, 150, 3), activation=ACTIVATION_FUNCTION))
     # adding another layer of max pooling
     classifier.add(MaxPooling2D(pool_size=(2, 2)))
     # adding last layer of convolutional 2D layer
-    classifier.add(Convolution2D(64, (3, 3), input_shape=(3, 3), activation='relu'))
+    classifier.add(Convolution2D(CON2D_FILTERS, (3, 3), input_shape=(3, 3), activation=ACTIVATION_FUNCTION))
     # adding another pooling layer
     classifier.add(MaxPooling2D(pool_size=(2, 2)))
     # adding flattening layer for giving inputs to the neural network
     classifier.add(Flatten())
     # adding an extra dense layer
-    classifier.add(Dense(units=512, activation='relu'))
+    classifier.add(Dense(units=128, activation=ACTIVATION_FUNCTION))
     # adding another layer of dense
-    # classifier.add(Dense(units=64, activation='relu'))
+    classifier.add(Dense(units=64, activation=ACTIVATION_FUNCTION))
     # adding the final layer for the output
-    classifier.add(Dense(units=1, activation='softmax', ))
+    classifier.add(Dense(units=1, activation=OUTPUT_LAYER_ACTIVATION_FUNCTION))
     # compiling the neural network
-    classifier.compile(optimizer='rmsprop', loss='binary_crossentropy', metrics=['accuracy'])
+    classifier.compile(optimizer=OPTIMIZER, loss=LOSS_FUNCTION, metrics=METRICS)
     # fitting the images using keras library
     train_datagen = ImageDataGenerator(
         rescale=1. / 255,
@@ -100,6 +122,9 @@ def runModel():
     classifier.save(MODEL_DIR + str(datetime.now()))
 
 
+# =====================================================================================================================================
+
+# ///////////////////////////////////////------PREDICITON PART------ ///////////////////////////////////////////////////////////////
 def prediction():
     # loading the trained model
     classifier = load_model(MODEL_DIR)
@@ -121,6 +146,9 @@ def prediction():
         print("PNEUMONIA")
 
 
+# ======================================================================================================================================
+
+
 def main():
     # checking if the model already exists in the directory
     if os.path.exists(MODEL_DIR):
@@ -128,8 +156,6 @@ def main():
         choice = input("Yes(Y) Or No")
         if choice == 'Y' or choice == 'y':
             runModel()
-
-        print("Model Already Exists Performing The Prediction On The GivYen Image")
         prediction()
     else:
         print("No Trained Models Run Training")
