@@ -8,10 +8,11 @@ from keras.preprocessing.image import ImageDataGenerator
 from keras.preprocessing import image
 from keras.layers import Flatten
 from keras.models import load_model
+from datetime import datetime
 
 BASE = os.getcwd()
 MODEL_DIR = BASE + '/Models/myModel'
-PREDICTION_IMAGE = ''
+PREDICTION_IMAGE = BASE + '/Dataset/val/PNEUMONIA/person1949_bacteria_4880.jpeg'
 TRAINING_DATA = BASE + '/Dataset/train/'
 TESTING_DATA = BASE + '/Dataset/test/'
 VALIDATION_DATASET = BASE + '/val/'
@@ -34,21 +35,22 @@ def get_steps_per_epoches():
 
 def runModel():
     # making directory for the model
-    if os.path.exists(BASE + '/Models'):
-        os.rmdir(BASE + '/Models')
-    os.makedirs(BASE + '/Models')
+    if os.path.exists(BASE + '/Models') and os.path.exists(MODEL_DIR):
+        os.rename(MODEL_DIR, BASE + '/Models/OldModel' + str(datetime.now()))
+    else:
+        os.makedirs(BASE + '/Models')
     # initializing the neural network
     classifier = Sequential()
     # adding a convolution layer to the neural network
-    classifier.add(Convolution2D(64, (3, 3), input_shape=(150, 150, 3), activation='relu'))
+    classifier.add(Convolution2D(65, (3, 3), input_shape=(150, 150, 3), activation='relu'))
     # adding pooling layer using maxpooling
     classifier.add(MaxPooling2D(pool_size=(2, 2)))
     # adding another convolution layer
-    classifier.add(Convolution2D(64, (3, 3), input_shape=(150, 150, 3), activation='relu'))
+    classifier.add(Convolution2D(65, (3, 3), input_shape=(150, 150, 3), activation='relu'))
     # adding another max pooling layer for conv2D
     classifier.add(MaxPooling2D(pool_size=(2, 2)))
     # adding another layer of convolution layer
-    classifier.add(Convolution2D(64, (3, 3), input_shape=(150, 150, 3), activation='relu'))
+    classifier.add(Convolution2D(65, (3, 3), input_shape=(150, 150, 3), activation='relu'))
     # adding another layer of max pooling
     classifier.add(MaxPooling2D(pool_size=(2, 2)))
     # adding last layer of convolutional 2D layer
@@ -58,11 +60,11 @@ def runModel():
     # adding flattening layer for giving inputs to the neural network
     classifier.add(Flatten())
     # adding an extra dense layer
-    classifier.add(Dense(units=128, activation='relu'))
+    classifier.add(Dense(units=512, activation='relu'))
     # adding another layer of dense
-    classifier.add(Dense(units=32, activation='relu'))
+    # classifier.add(Dense(units=64, activation='relu'))
     # adding the final layer for the output
-    classifier.add(Dense(units=1, activation='sigmoid', ))
+    classifier.add(Dense(units=1, activation='softmax', ))
     # compiling the neural network
     classifier.compile(optimizer='rmsprop', loss='binary_crossentropy', metrics=['accuracy'])
     # fitting the images using keras library
@@ -95,14 +97,14 @@ def runModel():
         validation_data=testing_set,
         validation_steps=number[1])
     # saving the model in the folder after training
-    classifier.save(MODEL_DIR)
+    classifier.save(MODEL_DIR + str(datetime.now()))
 
 
 def prediction():
     # loading the trained model
     classifier = load_model(MODEL_DIR)
     # transforming the given images
-    test_image = image.load_img(PREDICTION_IMAGE)
+    test_image = image.load_img(PREDICTION_IMAGE, target_size=(150, 150))
     # converting the image to array
     test_image = image.img_to_array(test_image)
     # adding new dimension to the image array for processing
@@ -110,7 +112,13 @@ def prediction():
     # predicting the given image
     result = classifier.predict(test_image)
     # displaying the output
-    print("The Prediction Made is", result)
+    # classifier.summary()
+    print("NORMAL:0 , PNEUMONIA :1")
+    print("The Prediction Made is", result[0][0])
+    if result[0][0] == 0:
+        print("NORMAL")
+    elif result[0][0] == 1:
+        print("PNEUMONIA")
 
 
 def main():
