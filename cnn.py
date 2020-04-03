@@ -1,6 +1,5 @@
 import os
 import numpy as np
-# import tensorflow as tf
 from keras.models import Sequential
 from keras.layers import Dense
 from keras.layers import Convolution2D
@@ -16,7 +15,7 @@ PREDICTION_IMAGE = ''
 TRAINING_DATA = BASE + '/Dataset/train/'
 TESTING_DATA = BASE + '/Dataset/test/'
 VALIDATION_DATASET = BASE + '/val/'
-EPOCH = 50
+EPOCH = 5
 
 
 def get_steps_per_epoches():
@@ -35,9 +34,9 @@ def get_steps_per_epoches():
 
 def runModel():
     # making directory for the model
-    if os.path.exists(BASE + '/Models/'):
-        os.remove(BASE + '/Models/')
-    os.makedirs(BASE + '/Models/')
+    if os.path.exists(BASE + '/Models'):
+        os.rmdir(BASE + '/Models')
+    os.makedirs(BASE + '/Models')
     # initializing the neural network
     classifier = Sequential()
     # adding a convolution layer to the neural network
@@ -59,9 +58,9 @@ def runModel():
     # adding flattening layer for giving inputs to the neural network
     classifier.add(Flatten())
     # adding an extra dense layer
-    classifier.add(Dense(units=512, activation='relu'))
-    # adding another layer of dense
     classifier.add(Dense(units=128, activation='relu'))
+    # adding another layer of dense
+    classifier.add(Dense(units=32, activation='relu'))
     # adding the final layer for the output
     classifier.add(Dense(units=1, activation='sigmoid', ))
     # compiling the neural network
