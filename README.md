@@ -17,7 +17,7 @@ It uses rapid api to get the data where django controls the backend and UI is ge
 3. then run __python cnn.py__ 
 4. after the training is completed the model is saved inside __models__
 5. load __myModel__ using __TensorFlow__ and use __.predict__ method 
-=============================== ENJOY LEARNING EVERYDAY================================================
+==========ENJOY LEARNING EVERYDAY==========================
 
 
 
