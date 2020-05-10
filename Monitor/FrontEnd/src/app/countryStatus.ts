@@ -1,0 +1,15 @@
+export interface CountryStatus {
+  country_name: string,
+  cases: string,
+  deaths: string,
+  region: string,
+  total_recovered: string,
+  new_deaths: string,
+  new_cases: string,
+  serious_critical: string,
+  active_cases: string,
+  total_case_per_1m_population: string,
+  deaths_per_1m_population: string,
+  total_tests: string,
+  test_per_1m_population: string,
+}

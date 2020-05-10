@@ -1,0 +1,28 @@
+<div class="container mt-3 col-xs-1">
+  <div class="col-md-12">
+    <div class="card-deck mb-3 text-center">
+      <div class="card mb-4 box-shadow">
+        <div class="card-header">
+          <h4 class="my-0 font-weight-normal">World Current Status</h4>
+        </div>
+        <div class="card-body">
+          <h1 class="card-title pricing-card-title">Total Cases <small class="text-muted">{{worldStatus.total_cases}}</small></h1>
+          <ul class="list-unstyled mt-3 mb-5 text-muted">
+            <li class="m-3">New Cases : {{worldStatus.new_cases}}</li>
+            <li class="m-3">Total Deaths : {{worldStatus.total_deaths}}</li>
+            <li class="m-3">New Deaths : {{ worldStatus.new_deaths}}</li>
+            <li class="m-3">Total Recovered : {{worldStatus.total_recovered}}</li>
+            <li class="m-3">Active Cases : {{worldStatus.active_cases}}</li>
+            <li class="m-3">Seriously Critical : {{worldStatus.serious_critical}}</li>
+            <li class="m-3">Total Cases Per 1M Population : {{worldStatus.total_cases_per_1m_population}}</li>
+            <li class="m-3">Deaths Per 1M Population : {{worldStatus.deaths_per_1m_population}}</li>
+            <li class="m-3">Data Updated At : {{worldStatus.statistic_taken_at | date :'longDate'}}</li>
+          </ul>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
